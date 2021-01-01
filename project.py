@@ -43,7 +43,7 @@ for i in stream_list:
     if video_quality in str(i) and video_bool == False:
         i.download(filename = 'video')
         video_format = i.subtype
-        video_bool == True
+        video_bool = True
     
     if audio_quality in str(i) and audio_bool == False:
         i.download(filename ='audio')
