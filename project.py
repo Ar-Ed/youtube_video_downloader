@@ -22,7 +22,7 @@ audio_bool = False
 
 for i in range(len(stream_list)):
 
-    if quality in str(stream_list[i]) and video_bool == False:
+    if quality in str(stream_list[i]) and video_bool == False and stream_list[i].mime_type == 'video/mp4':
         stream_list[i].download(filename = 'video')
         video_bool == True
     
