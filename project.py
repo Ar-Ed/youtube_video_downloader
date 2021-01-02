@@ -2,9 +2,11 @@ from pytube import YouTube
 import os.path
 import re
 
-url = input('url: ')
+url = input('\nurl: ')
+path = input('\nPath you want to install (example: /Users/your_name/):')
 
 yt = YouTube(url)
+
 stream_list = yt.streams
 
 video_list = set()
@@ -19,11 +21,13 @@ for i in stream_list:
             video_list.add(int(re.findall('[[0-9]+(?=p)',str(i))[0]))    
     except: continue
 
-print(f'Video qualities:{sorted(video_list,reverse=True)}', f'\n\nAudio qualities: {sorted(audio_list,reverse=True)}')
+print(f'\nVideo qualities:{sorted(video_list,reverse=True)}', f'\n\nAudio qualities: {sorted(audio_list,reverse=True)}')
 video_quality = input('Prefered Video quality: ') + 'p'
 audio_quality = input('Prefered Audio quality: ') + 'kbps'
 output_video_format = input('Prefered output format: ')
-##%%
+video_name = ''.join([i for i in (yt.title ) if  i.isalnum() or i==' ']).replace(' ','_') + '.'+output_video_format
+
+print(video_name)
 
 video_bool = False
 audio_bool = False
@@ -45,18 +49,24 @@ for i in stream_list:
 
 audio_file = 'audio.' + audio_format
 video_file = 'video.' + video_format
+output = f'output.{output_video_format}'
 
 while(True):
     
         if os.path.isfile(audio_file) and os.path.isfile(video_file):
             break
 
-os.system(f"ffmpeg -i {video_file} -i {audio_file} -y -vcodec copy output.{output_video_format}")
+
+os.system(f"ffmpeg -i {video_file} -i {audio_file} -y -vcodec copy {output}")
+os.system(f'mv {output} {video_name}')
+os.system(f'mv {video_name} {path}')
+
 
 try:
     os.remove(video_file)
     os.remove(audio_file)
     os.remove('video.webm')
+
 except:
     pass
 
