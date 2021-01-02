@@ -2,16 +2,7 @@ from pytube import YouTube
 import os.path
 import re
 
-def combine_audio(vidname, audname, outname, fps=30):
-    import moviepy.editor as mpe
-    
-    my_clip = mpe.VideoFileClip(vidname)
-    audio_background = mpe.AudioFileClip(audname)
-    final_clip = my_clip.set_audio(audio_background)
-    final_clip.write_videofile(outname, temp_audiofile='temp-audio.m4a', remove_temp=True, fps=fps, codec='libx264', audio_codec='aac')
-
-
-url = input('url: \n')
+url = input('url: ')
 
 yt = YouTube(url)
 stream_list = yt.streams
@@ -26,8 +17,7 @@ for i in stream_list:
             audio_list.add(int(re.findall('[0-9]+(?=kbps)',str(i))[0]))
         if i.includes_video_track:    
             video_list.add(int(re.findall('[[0-9]+(?=p)',str(i))[0]))    
-    except: 
-        continue
+    except: continue
 
 print(f'Video qualities:{sorted(video_list,reverse=True)}', f'\n\nAudio qualities: {sorted(audio_list,reverse=True)}')
 video_quality = input('Prefered Video quality: ') + 'p'
@@ -61,7 +51,7 @@ while(True):
         if os.path.isfile(audio_file) and os.path.isfile(video_file):
             break
 
-combine_audio(video_file, audio_file, 'out.'+output_video_format)
+os.system(f"ffmpeg -i {video_file} -i {audio_file} -y -vcodec copy output.{output_video_format}")
 
 try:
     os.remove(video_file)
