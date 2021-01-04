@@ -2,11 +2,37 @@ from pytube import YouTube
 import os.path
 import re
 
-url = input('\nurl: ')
+def video_search(video_name):
+    from youtubesearchpython import VideosSearch
+    
+    allSearch = VideosSearch(video_name, limit = 12).result()
+    
+    j=1
+    for i in allSearch['result']:
+        print(j, i['title'], 'Duration:', i['duration'])
+        j+=1
+        
+    print('\n0 to search again')
+    rank = int(input("Rank of the prefered video: "))
+    
+    if rank == 0:
+        return video_search(input('\nType Youtube search:'))
+    
+    return allSearch['result'][rank - 1]['link']
+
+
+user_search = input('\nType Youtube search or url: ')
+
+if 'youtube.com' in user_search:
+    url = user_search
+else:
+    url = video_search(user_search)
+
+print(f'\nDownloading {url}')
+
 path = input('\nPath you want to install (example: /Users/your_name/):')
 
 yt = YouTube(url)
-
 stream_list = yt.streams
 
 video_list = set()
@@ -56,11 +82,9 @@ while(True):
         if os.path.isfile(audio_file) and os.path.isfile(video_file):
             break
 
-
 os.system(f"ffmpeg -i {video_file} -i {audio_file} -y -vcodec copy {output}")
 os.system(f'mv {output} {video_name}')
 os.system(f'mv {video_name} {path}')
-
 
 try:
     os.remove(video_file)
@@ -69,6 +93,10 @@ try:
 
 except:
     pass
+
+print('"done" to quit')
+if input().lower() == 'done':
+    quit()
 
 
 
