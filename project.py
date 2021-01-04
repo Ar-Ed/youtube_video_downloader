@@ -2,32 +2,29 @@ from pytube import YouTube
 import os.path
 import re
 
-def video_search(video_name):
-    from youtubesearchpython import VideosSearch
+def video_search():
+    user_search = input('\nType Youtube search or url: ')
     
-    allSearch = VideosSearch(video_name, limit = 12).result()
+    if 'youtube.com' in user_search:
+        return user_search
+    else:
+        from youtubesearchpython import VideosSearch
+        allSearch = VideosSearch(user_search, limit = 12).result()
     
-    j=1
-    for i in allSearch['result']:
-        print(j, i['title'], 'Duration:', i['duration'])
-        j+=1
+        j=1
+        for i in allSearch['result']:
+            print(j, i['title'], 'Duration:', i['duration'])
+            j+=1
         
-    print('\n0 to search again')
-    rank = int(input("Rank of the prefered video: "))
+        print('\n0 to search again')
+        rank = int(input("Rank of the prefered video: "))
     
-    if rank == 0:
-        return video_search(input('\nType Youtube search:'))
+        if rank == 0:
+            return video_search()
     
-    return allSearch['result'][rank - 1]['link']
+        return allSearch['result'][rank - 1]['link']
 
-
-user_search = input('\nType Youtube search or url: ')
-
-if 'youtube.com' in user_search:
-    url = user_search
-else:
-    url = video_search(user_search)
-
+url = video_search()
 print(f'\nDownloading {url}')
 
 path = input('\nPath you want to install (example: /Users/your_name/):')
@@ -53,7 +50,7 @@ audio_quality = input('Prefered Audio quality: ') + 'kbps'
 output_video_format = input('Prefered output format: ')
 video_name = ''.join([i for i in (yt.title ) if  i.isalnum() or i==' ']).replace(' ','_') + '.'+output_video_format
 
-print(video_name)
+print('\n',video_name)
 
 video_bool = False
 audio_bool = False
